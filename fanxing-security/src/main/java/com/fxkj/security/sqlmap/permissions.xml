@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap 
+PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="permission">
+	<typeAlias alias="permissions" type="com.fxkj.security.entity.Permissions" />
+	<resultMap id="permissionsResult" class="permissions">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="namePath" column="name_path" />
+		<result property="parentId" column="parentId" />
+		<result property="icon" column="icon" />
+		<result property="bgColor" column="bgColor" />
+		<result property="webUrl" column="webUrl" />
+		<result property="btnFlg" column="btnFlg" />
+		<result property="leaf" column="leaf" />
+		<result property="type" column="type" />
+		<result property="enabled" column="enabled" />
+	</resultMap>
+
+
+	<resultMap id="permissionsResultForShortcut" class="permissions">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="icon" column="icon" />
+		<result property="parentId" column="parentId" />
+		<result property="namePath" column="name_path" />
+	</resultMap>
+	
+	<resultMap id="permissionsResultForAuthorize" class="permissions">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="icon" column="icon" />
+		<result property="parentId" column="parentId" />
+		<result property="type" column="type" />
+		<result property="checked" column="checked" />
+	</resultMap>
+	
+	<resultMap id="permissionsResultForRedisAuthorize" class="permissions">
+		<result property="id" column="id" />
+		<result property="webUrl" column="webUrl" />
+		<result property="btnFlg" column="btnFlg" />
+	</resultMap>
+	
+
+	<resultMap id="perSimpleResult" class="permissions">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="parentId" column="parentId" />
+		<result property="namePath" column="name_path" />
+		<result property="icon" column="icon" />
+
+	</resultMap>
+	<select id="getPermissionsForSimpleById" parameterClass="java.lang.Integer" resultMap="perSimpleResult"> 
+	      select p.id,p.name,p.parentId,p.name_path,p.icon from secu_permissions p where p.id=#id#
+	</select>
+	
+	<insert id="addPermissions" parameterClass="permissions">
+		INSERT INTO secu_permissions
+		(parentId, name,icon,bgColor,webUrl, btnFlg,leaf,type,enabled,name_path)
+		VALUES
+		(#parentId#,#name#,#icon#,#bgColor#,#webUrl#,#btnFlg#,#leaf#,#type#,#enabled#,#namePath#
+		);
+		<selectKey resultClass="java.lang.Integer" keyProperty="id">
+			select max(id) from secu_permissions
+		</selectKey>
+	</insert>
+	<select id="getPermissionsForRedisAuthorizeByEnabled" parameterClass="java.lang.Integer" resultMap="permissionsResultForRedisAuthorize"> 
+	     select * from secu_permissions p where p.enabled=#flg#
+	</select>
+	
+	<select id="getPermissionsEnabledForAuthorize" parameterClass="java.util.Map" resultMap="permissionsResultForAuthorize"> 
+	     select p.id,p.name,p.icon,p.parentId,p.type, IF((SELECT id FROM  secu_role_permissions WHERE permissions_id=p.id AND role_id=#roleId# ) IS NULL,0,1) AS checked
+	     from secu_permissions p where p.enabled=#flg#
+	</select>
+	<select id="getPermissionListByRoleIds" parameterClass="java.lang.String" resultMap="permissionsResult"> 
+		  SELECT * FROM secu_permissions p WHERE p.id IN(
+		         SELECT rp.permissions_id FROM secu_role_permissions rp WHERE rp.role_id IN ($ids$)
+		        ) AND p.enabled=1 AND p.type=1      
+	</select>
+	
+
+
+
+</sqlMap>

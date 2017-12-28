@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap 
+PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="common">
+	<sql id="sql_count">select count(*) from</sql>
+	<sql id="sql_select">select *</sql>
+	<sql id="sql_limit">
+		limit
+		<isNotNull property="pageNum">#pageNum#</isNotNull>
+		,
+		<isNotNull property="pageSize">#pageSize#</isNotNull>
+	</sql>
+</sqlMap>

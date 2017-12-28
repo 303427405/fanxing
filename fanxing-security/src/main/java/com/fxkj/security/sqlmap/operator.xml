@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap 
+PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="operator">
+	<typeAlias alias="Operator" type="com.fxkj.security.entity.Operator" />
+	<resultMap id="operatorResult" class="Operator">
+		<result property="id" column="id" />
+		<result property="loginName" column="loginName" />
+		<result property="realName" column="realName" />
+		<result property="password" column="password" />
+		<result property="phone" column="phone" />
+		<result property="mobile" column="mobile" />
+		<result property="email" column="email" />
+		<result property="enabled" column="enabled" />
+		<result property="isLockScreen" column="isLockScreen" />
+		<result property="accountNonExpired" column="accountNonExpired" />
+		<result property="imgPath" column="imgPath" />
+		<result property="orgCode" column="orgCode" />
+		<result property="validDate" column="validDate" />
+		
+		<result property="createUser" column="createUser" />
+		<result property="updateUser" column="updateUser" />
+		<result property="createDate" column="createDate" />
+		<result property="updateDate" column="updateDate" />
+	</resultMap>
+	<resultMap id="operatorListResult"  class="Operator" extends="operatorResult">
+		<result property="orgName" column="orgName" />
+	</resultMap>
+	
+	<select id="checkLoginNameRepeat" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+       select id from   secu_operator so where so.loginName=#loginName#
+	</select>
+	<select id="checkSelfPasswordById" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+       select count(*) from   secu_operator so where so.id=#id# and password=#password#
+	</select>
+	<update id="changeEnabled" parameterClass="java.util.Map">
+		update secu_operator set enabled=#flg# ,accountNonExpired=#flg#  where  id=#id#
+	</update>
+	<update id="lockOrUnlockScreen" parameterClass="java.util.Map">
+		update secu_operator set isLockScreen=#isLockScreen#   where  id=#id#
+	</update>
+	
+	<update id="updatePasswordById" parameterClass="Operator">
+		update secu_operator set
+		<dynamic>
+			id=#id#
+			<isNotNull prepend="," property="password"> password=#password#</isNotNull>
+			<isNotNull prepend="," property="createUser"> createUser=#createUser#</isNotNull>
+			<isNotNull prepend="," property="createDate"> createDate=#createDate#</isNotNull>
+			<isNotNull prepend="," property="updateUser"> updateUser=#updateUser#</isNotNull>
+			<isNotNull prepend="," property="updateDate"> updateDate=#updateDate#</isNotNull>
+		</dynamic>
+		WHERE id=#id#
+	</update>
+	
+	<update id="updateOperatorById" parameterClass="Operator">
+		update secu_operator set
+		<dynamic>
+			id=#id#
+			<isNotNull prepend="," property="loginName"> loginName=#loginName#</isNotNull>
+			<isNotNull prepend="," property="realName"> realName=#realName#</isNotNull>
+			<isNotNull prepend="," property="password"> password=#password#</isNotNull>
+			<isNotNull prepend="," property="phone"> phone=#phone#</isNotNull>
+			<isNotNull prepend="," property="mobile"> mobile=#mobile#</isNotNull>
+			<isNotNull prepend="," property="email"> email=#email#</isNotNull>
+			<isNotNull prepend="," property="enabled"> enabled=#enabled#</isNotNull>
+			<isNotNull prepend="," property="isLockScreen"> isLockScreen=#isLockScreen#</isNotNull>
+			<isNotNull prepend="," property="accountNonExpired"> accountNonExpired=#accountNonExpired#</isNotNull>
+			<isNotNull prepend="," property="imgPath"> imgPath=#imgPath#</isNotNull>
+			<isNotNull prepend="," property="orgCode"> orgCode=#orgCode#</isNotNull>
+			
+			<isNotNull prepend="," property="validDate"> validDate=#validDate#</isNotNull>
+			<isNull    prepend="," property="validDate">validDate=null</isNull>
+			
+			<isNotNull prepend="," property="createUser"> createUser=#createUser#</isNotNull>
+			<isNotNull prepend="," property="createDate"> createDate=#createDate#</isNotNull>
+			<isNotNull prepend="," property="updateUser"> updateUser=#updateUser#</isNotNull>
+			<isNotNull prepend="," property="updateDate"> updateDate=#updateDate#</isNotNull>
+		</dynamic>
+		WHERE id=#id#
+	</update>
+	<insert id="addOperator" parameterClass="Operator">
+		insert into
+		secu_operator(orgCode,imgPath,loginName,realName,password,phone,mobile,email,enabled,isLockScreen,accountNonExpired,createUser,updateUser,createDate,updateDate)
+		values(#orgCode#,#imgPath#,#loginName#,#realName#,#password#,#phone#,#mobile#,#email#,#enabled#,#isLockScreen#,#enabled#,#createUser#,#updateUser#,#createDate#,#updateDate#)
+		<selectKey resultClass="java.lang.Integer" keyProperty="id">
+			select max(id) from secu_operator
+		</selectKey>
+	</insert>
+	<sql id="sql_where">
+		<dynamic>
+			<isNotEmpty prepend=" and " property="o.loginName"> so.loginName like concat('%', #o.loginName#, '%') escape '/'</isNotEmpty>
+			<isNotEmpty prepend=" and " property="o.enabled"> so.enabled=#o.enabled#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="o.orgCode"> so.orgCode =#o.orgCode#</isNotEmpty>
+			<isEmpty 	prepend=" and " property="o.orgCode"> <isNotEmpty  property="o.areaCode"> so.orgCode like concat(#o.areaCode#, '%') escape '/' </isNotEmpty> </isEmpty>
+			<isNotEmpty prepend=" and " property="o.updateTimeStart"> so.updateDate &gt;=concat(#o.updateTimeStart#, ' 00:00:00') </isNotEmpty>
+			<isNotEmpty prepend=" and " property="o.updateTimeEnd"> so.updateDate &lt;= concat(#o.updateTimeEnd#, ' 23:59:59')</isNotEmpty>
+		</dynamic>
+	</sql>
+	
+	
+	<select id="countOperator" parameterClass="java.util.Map" resultClass="java.lang.Long">
+		<include refid="common.sql_count" />
+		secu_operator so where 1=1
+		<include refid="sql_where" />
+	</select>
+	<select id="listOperator" resultMap="operatorListResult" parameterClass="java.util.Map">
+		select so.*,sor.name as orgName from 
+		secu_operator so  left join secu_organization sor on sor.code=so.orgCode where 1=1
+		<include refid="sql_where" />
+		<isNotPropertyAvailable property="sort">order by so.updateDate desc</isNotPropertyAvailable>
+		<isPropertyAvailable property="sort">order by $sort$</isPropertyAvailable>
+		<include refid="common.sql_limit" />
+	</select>
+	
+	<select id="getOperatorByLoginName" parameterClass="java.lang.String"
+		resultMap="operatorResult"> select * from secu_operator o where o.loginName=#loginName#
+	</select>
+	
+	<select id="getOperatorById" parameterClass="java.lang.Integer" resultMap="operatorListResult"> 
+		select o.*,so.name as orgName from secu_operator o  left join secu_organization so on so.code=o.orgCode where o.id=#id#
+	</select>
+</sqlMap>

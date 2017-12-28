@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap 
+PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="role">
+	<typeAlias alias="Role" type="com.fxkj.security.entity.Role" />
+	<typeAlias alias="RoleAndPermissions" type="com.fxkj.security.entity.RoleAndPermissions" />
+	<typeAlias alias="RoleAndOperator" type="com.fxkj.security.entity.RoleAndOperator" />
+	<resultMap id="roleResult" class="Role">
+		<result property="id" column="id" />
+		<result property="roleName" column="roleName" />
+		<result property="description" column="description" />
+		<result property="enabled" column="enabled" />
+		<result property="createUser" column="createUser" />
+		<result property="updateUser" column="updateUser" />
+		<result property="createDate" column="createDate" />
+		<result property="updateDate" column="updateDate" />
+	</resultMap>
+	
+	<resultMap id="roleResultForRedisAuthorize" class="Role">
+		<result property="id" column="id" />
+		<result property="roleName" column="roleName" />
+		<result property="enabled" column="enabled" />
+	</resultMap>
+	
+	<resultMap id="roleResultForOperatorAuthorize" extends="roleResultForRedisAuthorize" class="Role">
+		<result property="checked" column="checked" />
+		<result property="description" column="description" />
+	</resultMap>
+	
+	<insert id="addRole" parameterClass="Role">
+		insert into
+		secu_role(roleName,description,enabled,createUser,updateUser,createDate,updateDate)
+		values(#roleName#,#description#,#enabled#,#createUser#,#updateUser#,#createDate#,#updateDate#)
+		<selectKey resultClass="java.lang.Integer" keyProperty="id">
+			select max(id) from secu_role
+		</selectKey>
+	</insert>
+	
+	<insert id="addRoleAndOperator" parameterClass="RoleAndOperator">
+		insert into secu_operator_role(operator_id,role_id) values(#operatorId#,#roleId#)
+		<selectKey resultClass="java.lang.Integer" keyProperty="id">
+			select max(id) from secu_operator_role
+		</selectKey>
+	</insert>
+	<insert id="addRoleAndPermissions" parameterClass="RoleAndPermissions">
+		insert into secu_role_permissions(role_id,permissions_id)
+		values(#roleId#,#permissionsId#)
+		<selectKey resultClass="java.lang.Integer" keyProperty="id">
+			select max(id) from secu_role_permissions
+		</selectKey>
+	</insert>
+	<delete id="deletePermissionsListByRoleId" parameterClass="java.lang.Integer"> 
+		delete from secu_role_permissions where role_id=#roleId#
+	</delete>
+	<delete id="deleteRoleByOperatorId" parameterClass="java.lang.Integer"> 
+		delete from secu_operator_role where operator_id=#OperatorId#
+	</delete>
+	<update id="changeEnabled" parameterClass="java.util.Map">
+		update secu_role set enabled=#flg# where  id=#id#
+	</update>
+	
+
+	
+	<update id="updateRoleById" parameterClass="Role">
+		update secu_role set
+		<dynamic>
+			id=#id#
+			<isNotNull prepend="," property="roleName"> roleName=#roleName#</isNotNull>
+			<isNotNull prepend="," property="description"> description=#description#</isNotNull>
+			<isNotNull prepend="," property="enabled"> enabled=#enabled#</isNotNull>
+			
+			<isNotNull prepend="," property="createUser"> createUser=#createUser#</isNotNull>
+			<isNotNull prepend="," property="createDate"> createDate=#createDate#</isNotNull>
+			<isNotNull prepend="," property="updateUser"> updateUser=#updateUser#</isNotNull>
+			<isNotNull prepend="," property="updateDate"> updateDate=#updateDate#</isNotNull>
+		</dynamic>
+		WHERE id=#id#
+	</update>
+	
+	
+	<sql id="sql_where">
+		<dynamic>
+			<isNotEmpty prepend=" and " property="r.roleName"> sr.roleName like concat('%', #r.roleName#, '%') escape '/'</isNotEmpty>
+			<isNotEmpty prepend=" and " property="r.enabled"> sr.enabled=#r.enabled#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="r.updateTimeStart"> sr.updateDate &gt;=concat(#r.updateTimeStart#, ' 00:00:00')</isNotEmpty>
+			<isNotEmpty prepend=" and " property="r.updateTimeEnd"> sr.updateDate &lt;=concat(#r.updateTimeEnd#, ' 23:59:59')</isNotEmpty>
+		</dynamic>
+	</sql>
+	
+	<select id="countRole" parameterClass="java.util.Map" resultClass="java.lang.Long">
+		<include refid="common.sql_count" />
+		secu_role sr where 1=1
+		<include refid="sql_where" />
+	</select>
+	
+	<select id="listRole" resultMap="roleResult" parameterClass="java.util.Map">
+		select * from secu_role sr where 1=1
+		<include refid="sql_where" />
+		<isNotPropertyAvailable property="sort">order by sr.updateDate desc</isNotPropertyAvailable>
+		<isPropertyAvailable property="sort">order by $sort$</isPropertyAvailable>
+		<include refid="common.sql_limit" />
+	</select>
+				
+	<select id="getEnabledRoleListByOperatorId" parameterClass="java.lang.Integer" resultMap="roleResult"> 
+	     select * from secu_role r where r.id in (select sor.role_id from secu_operator_role sor where sor.operator_id=#operatorId#) and r.enabled=1
+	</select>
+
+	<select id="getRoleListForRedisAuthorizeByPId" parameterClass="java.lang.Integer" resultMap="roleResultForRedisAuthorize"> 
+		select r.id,r.roleName,r.enabled 
+		  from secu_role r where r.id in(
+		                                  select rp.role_id from secu_role_permissions rp where rp.permissions_id=#id#
+		                               ) 
+		                        and r.enabled=1
+	</select>
+	
+	<select id="getRoleById" parameterClass="java.lang.Integer"  resultMap="roleResult"> 
+	    select * from secu_role sr where sr.id=#id#
+	</select>
+	<select id="getRoleListForAuthorizeByEnabledAndOperatorId" parameterClass="java.util.Map" resultMap="roleResultForOperatorAuthorize"> 
+		select r.id,r.roleName,r.description,r.enabled,IF((SELECT id FROM  secu_operator_role WHERE role_id=r.id AND operator_id=#operatorId#) IS NULL,0,1) AS checked 
+		 from secu_role r where    r.enabled=#flg#
+	</select>
+
+
+</sqlMap>

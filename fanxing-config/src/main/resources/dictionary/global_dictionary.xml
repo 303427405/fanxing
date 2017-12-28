@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dictionary-config>
+	<dc name="系统模块状态" leaf="1" code="systemStatus" sequence="0">
+		<d name="启用" leaf="2" code="1" sequence="0" />
+		<d name="禁用" leaf="2" code="0" sequence="1" />
+	</dc>
+	<dc name="工单状态" leaf="1" code="workOrderStatus" sequence="1">
+		<d name="已受理" 	    leaf="2" code="0" sequence="0" />
+		<d name="正在处理"   	leaf="2" code="1" sequence="1" />
+		<d name="已完成" 		leaf="2" code="2" sequence="1" />
+		<d name="已取消" 		leaf="2" code="3" sequence="1" />
+	</dc>
+	<dc name="素材类型" leaf="1" code="materialType" sequence="1">
+		<d name="文本" 	    leaf="2" code="0" sequence="0" />
+		<d name="图片"   	leaf="2" code="1" sequence="1" />
+		<d name="图文" 		leaf="2" code="2" sequence="1" />
+	</dc>
+	<dc name="维修类型" leaf="1" code="softServiceType" sequence="1">
+		<d name="主机" 		leaf="2" code="0" sequence="0" />
+		<d name="显示器"   	leaf="2" code="1" sequence="1" />
+		<d name="摄像头" 		leaf="2" code="2" sequence="2" />
+		<d name="路由器" 		leaf="2" code="3" sequence="3" />
+		<d name="操作系统" 	leaf="2" code="4" sequence="4" />
+		<d name="办公软件"   	leaf="2" code="5" sequence="5" />
+		<d name="网络"   	leaf="2" code="6" sequence="6" />
+		<d name="其它" 		leaf="2" code="7" sequence="7" />
+	</dc>
+</dictionary-config>

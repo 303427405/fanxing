@@ -1,0 +1,116 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <artifactId>fanxing</artifactId>
+        <groupId>com.fxkj</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>fanxing-erp</artifactId>
+    <packaging>war</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <name>fanxing-erp Maven Webapp</name>
+    <url>http://maven.apache.org</url>
+    <dependencies>
+        <!-- 依赖工程 -->
+        <dependency>
+            <groupId>com.fxkj</groupId>
+            <artifactId>fanxing-security</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <!-- 激活默认环境 -->
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <profiles.activation>dev</profiles.activation>
+                <build.timestamp>${timestamp}</build.timestamp>
+            </properties>
+        </profile>
+        <profile>
+            <id>qa</id>
+            <properties>
+                <profiles.activation>qa</profiles.activation>
+                <build.timestamp>${timestamp}</build.timestamp>
+            </properties>
+        </profile>
+        <profile>
+            <id>pe</id>
+            <properties>
+                <profiles.activation>pe</profiles.activation>
+                <build.timestamp>${timestamp}</build.timestamp>
+            </properties>
+        </profile>
+    </profiles>
+    <scm>
+        <connection>scm:svn:http://somerepository.com/svn_repo/trunk</connection>
+        <developerConnection>scm:svn:https://somerepository.com/svn_repo/trunk</developerConnection>
+        <url>http://somerepository.com/view.cvs</url>
+    </scm>
+
+    <build>
+        <finalName>fanxing-erp</finalName>
+        <!-- 把src/main/java下的所有的xml文件，打包到相应位置。 -->
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                    <include>**/*.tld</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                    <include>**/*.tld</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <!-- 生成版本号和时间戳 -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.2</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <buildNumberPropertiesFileLocation>src/main/resources/build.properties</buildNumberPropertiesFileLocation>
+                    <format>{0,date,yyyy-MM-dd HH:mm:ss}</format>
+                    <items>
+                        <item>timestamp</item>
+                        <item>buildNumber</item>
+                    </items>
+                </configuration>
+            </plugin>
+
+
+        </plugins>
+    </build>
+</project>

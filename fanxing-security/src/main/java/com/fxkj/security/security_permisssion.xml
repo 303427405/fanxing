@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<permission-config>
+	<pc name="快捷方式" icon="icon-kuaijiefangshimingcheng" color="orangeDark" url="/shortcutController/findShortcut.do"
+			type="1" leaf="1">
+			<btn name="添加" icon="icon-tianjia" flg="function.shortcut.add" type="2" leaf="2" />
+			<btn name="删除" icon="icon-delete" flg="function.shortcut.delete" type="2" leaf="2" />
+	</pc>
+	<pc name="系统设置" icon="icon-setting" type="1" leaf="1">
+		<!-- <p name="基础资料" icon="settings16" type="1" leaf="2">
+			<p name="三级菜单" icon="settings16" type="1" leaf="3">
+				<p name="学生信息" icon="student16" url="/test.do" type="1" leaf="4">
+					<btn name="高级搜索" flg="function.student.search" type="2" leaf="5" />
+				</p>
+			</p>
+		</p> -->
+		<p name="在线用户" icon="icon-zaixian" color="purple" url="/loginController/findOnLineUser.do" type="1" leaf="2">
+		</p>
+		<p name="组织管理" icon="icon-orgb" color="purple" url="/organizationController/findOrganization.do" type="1" leaf="2">
+			<btn name="添加" icon="icon-tianjia" flg="function.organizations.add" type="2" leaf="3" />
+			<btn name="编辑" icon="icon-edit" flg="function.organizations.update" type="2" leaf="3" />
+			<btn name="启/禁用" icon="icon-zhuangtailaiyuan" flg="function.organizations.enabled" type="2" leaf="3" />
+		</p>
+		<p name="用户管理" icon="icon-user" color="pinkDark" url="/operatorController/findOperator.do"
+			type="1" leaf="2">
+			<btn name="添加"     icon="icon-tianjia" flg="function.operator.add" type="2" leaf="3" />
+			<btn name="编辑" 	icon="icon-edit"    flg="function.operator.update" type="2" leaf="3" />
+			<btn name="启/禁用"   icon="icon-iconstatus" flg="function.operator.enabled" type="2" leaf="3" />
+			<btn name="重置密码"  icon="icon-password"     flg="function.operator.resetPassword" type="2" leaf="3" />
+			<btn name="组织选择"  icon="icon-orgb" flg="function.operator.orgSelect" type="2" leaf="3" />	
+		</p>
+		<p name="角色管理" icon="icon-jiaoseguanli" color="greenLight" url="/roleController/findRole.do" type="1"
+			leaf="2">
+			<btn name="添加" icon="icon-tianjia" flg="function.role.add" type="2" leaf="3" />
+			<btn name="编辑" icon="icon-edit" flg="function.role.update" type="2" leaf="3" />
+			<btn name="启/禁用"  icon="icon-zhuangtailaiyuan" flg="function.role.enabled" type="2" leaf="3" />
+		</p>
+		<p name="字典项" icon="icon-dictionary" color="blueDark" url="/dictionaryController/findDictionary.do"
+			type="1" leaf="2">
+			<btn name="启/禁用" icon="icon-zhuangtailaiyuan" flg="function.dictionary.enabled" type="2" leaf="3" />
+		</p>
+	</pc>
+</permission-config>

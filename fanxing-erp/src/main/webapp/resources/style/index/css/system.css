@@ -1,0 +1,15 @@
+
+
+#listTable th{
+	text-align:center;
+}
+#listTable td{
+	text-align:center;
+}
+
+#listTable tr th label{
+	width:18px;
+}
+#listTable #handle{
+	width:60px;
+}

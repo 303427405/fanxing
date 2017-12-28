@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap 
+PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="organization">
+	<typeAlias alias="Organization" type="com.fxkj.organization.entity.Organization" />
+	<resultMap id="orgResult" class="Organization">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="code" column="code" />
+		<result property="areaCode" column="area_code" />
+		<result property="areaName" column="areaName" />
+		<result property="state" column="state" />
+		<result property="sequence" column="sequence" />
+		<result property="remark" column="remark" />
+	
+		<result property="createUser" column="createUser" />
+		<result property="updateUser" column="updateUser" />
+		<result property="createDate" column="createDate" />
+		<result property="updateDate" column="updateDate" />
+	</resultMap>
+	<resultMap id="orgSimpleResult" class="Organization">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="code" column="code" />
+		<result property="areaCode" column="area_code" />
+	</resultMap>
+	
+	<update id="changeEnabled" parameterClass="java.util.Map">
+		update secu_organization set state=#flg#  where  id=#id#
+	</update>
+	
+	<update id="updateOrganizationById" parameterClass="Organization">
+		update secu_organization set
+		<dynamic>
+			<isNotNull  property="name"> name=#name#</isNotNull>
+			<isNotNull prepend="," property="sequence"> sequence=#sequence#</isNotNull>
+			<isNotNull prepend="," property="remark"> remark=#remark#</isNotNull>
+			
+			<isNotNull prepend="," property="createUser"> createUser=#createUser#</isNotNull>
+			<isNotNull prepend="," property="createDate"> createDate=#createDate#</isNotNull>
+			<isNotNull prepend="," property="updateUser"> updateUser=#updateUser#</isNotNull>
+			<isNotNull prepend="," property="updateDate"> updateDate=#updateDate#</isNotNull>
+		</dynamic>
+		WHERE id=#id#
+	</update>
+	
+	<insert id="addOrganization" parameterClass="Organization">
+		insert into
+		secu_organization(name,code,area_code,state,remark,sequence,createUser,updateUser,createDate,updateDate)
+		values(#name#,#code#,#areaCode#,#state#,#remark#,#sequence#,#createUser#,#updateUser#,#createDate#,#updateDate#)
+		<selectKey resultClass="java.lang.Integer" keyProperty="id">
+			select max(id) from secu_organization
+		</selectKey>
+	</insert>
+	<select id="checkCodeRepeatByAreaCode" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+       select id from   secu_organization so where so.code=#code# and so.area_code=#areaCode#
+	</select>
+
+	<sql id="sql_where">
+		<dynamic>
+			<isNotEmpty prepend=" and " property="org.name"> so.name like concat('%', #org.name#, '%') escape '/'</isNotEmpty>
+			 <isNotEmpty prepend=" and " property="org.areaCode"> so.area_code like concat(#org.areaCode#, '%') escape '/'</isNotEmpty>
+			<isNotEmpty prepend=" and " property="org.code"> so.code like concat(#org.code#, '%') escape '/'</isNotEmpty>
+			<isNotEmpty prepend=" and " property="org.state"> so.state=#org.state#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="org.updateTimeStart"> so.updateDate &gt;=concat(#org.updateTimeStart#, ' 00:00:00') </isNotEmpty>
+			<isNotEmpty prepend=" and " property="org.updateTimeEnd"> so.updateDate &lt;= concat(#org.updateTimeEnd#, ' 23:59:59')</isNotEmpty>
+		</dynamic>
+	</sql>
+	<select id="countOrg" parameterClass="java.util.Map" resultClass="java.lang.Long">
+		<include refid="common.sql_count" />
+		 secu_organization so
+		left join secu_area sa on sa.code=so.area_code
+		 where 1=1
+		<include refid="sql_where" />
+	</select>
+	<select id="listOrg" resultMap="orgResult" parameterClass="java.util.Map">
+		select so.*,sa.full_name as areaName 
+		from secu_organization so
+		 left join secu_area sa on sa.code=so.area_code
+		 where 1=1
+		<include refid="sql_where" />
+		<isNotPropertyAvailable property="sort">order by so.updateDate desc</isNotPropertyAvailable>
+		<isPropertyAvailable property="sort">order by $sort$</isPropertyAvailable>
+		<include refid="common.sql_limit" />
+	</select>
+	<select id="getOrganizationById" parameterClass="java.lang.Integer"  resultMap="orgResult"> 
+	   	select so.*,sa.full_name as areaName 
+		from secu_organization so
+		 left join secu_area sa on sa.code=so.area_code  where so.id=#id#
+	</select>
+    <select id="getOrganizationByAreaCode" parameterClass="java.lang.String"  resultMap="orgSimpleResult"> 
+	   	select so.id,so.name,so.code,so.area_code from secu_organization so  where so.area_code=#areaCode# and so.state=1
+	</select>
+	<select id="getOrganizationByCode" parameterClass="java.lang.String"  resultMap="orgSimpleResult"> 
+	   	select so.id,so.name,so.code,so.area_code from secu_organization so  where so.code=#orgCode# and so.state=1
+	</select>
+</sqlMap>

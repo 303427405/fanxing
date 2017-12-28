@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig
+PUBLIC "-//iBATIS.apache.org//DTD SQL Map Config 2.0/" "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+	<!--
+		这个节点是设置工程的总体性能，根据名称来设置 cacheModelsEnabled全局控制sqlMapClient的缓存
+		enhancementEnabled全局控制运行时字节码增强，优化javabean的属性性能 lazyLoadingEnabled延迟加载
+		maxRequests同时执行sql语句的最大线程数，通常大小是maxTransactions的10倍，并且总是大于maxTransactions和maxSessions的总和。减小这个值能够提高性能。
+		useStatementNamespaces是否启动全局的sqlmap名字空间。如果启动则应用时，必须加上名字空间：queryForObject(sqlMap的名字空间.statementName)
+	-->
+	<settings cacheModelsEnabled="true" enhancementEnabled="true"
+		lazyLoadingEnabled="true" errorTracingEnabled="true" maxRequests="32"
+		maxSessions="10" maxTransactions="5" useStatementNamespaces="true" />
+	<sqlMap resource="config/ibatis/common/common.xml" />
+
+</sqlMapConfig>

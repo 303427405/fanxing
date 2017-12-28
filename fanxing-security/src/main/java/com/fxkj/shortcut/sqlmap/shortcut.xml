@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap 
+PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="shortcut">
+	<typeAlias alias="Shortcut" type="com.fxkj.shortcut.entity.Shortcut" />
+	<typeAlias alias="permissions" type="com.fxkj.security.entity.Permissions" />
+	<resultMap id="shortcutResult" class="Shortcut">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="webUrl" column="webUrl" />
+	    <result property="icon" column="icon" />
+		<result property="bgColor" column="bgColor" />
+		<result property="sequence" column="sequence" />
+		<result property="createUser" column="createUser" />
+		<result property="updateUser" column="updateUser" />
+		<result property="createDate" column="createDate" />
+		<result property="updateDate" column="updateDate" />
+	</resultMap>
+	<resultMap id="shortcutSimpleResult" class="Shortcut">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="webUrl" column="webUrl" />
+	    <result property="icon" column="icon" />
+		<result property="bgColor" column="bgColor" />
+		<result property="sequence" column="sequence" />
+		<result property="permissionsId" column="permissionsId" />
+		
+	</resultMap>
+	<resultMap id="permissionsResultForShortcut" class="permissions">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="icon" column="icon" />
+		<result property="parentId" column="parentId" />
+		<result property="type" column="type" />
+		<result property="checked" column="checked" />
+		<result property="webUrl" column="webUrl" />
+	</resultMap>
+	
+	<insert id="addShortcut" parameterClass="Shortcut">
+		INSERT INTO secu_shortcut
+		(operator_id,permissions_id,name, sequence,createUser,updateUser,createDate,updateDate)
+		VALUES
+		(#operatorId#,#permissionsId#,#name#,#sequence#,#createUser#,#updateUser#,#createDate#,#updateDate#
+		);
+		<selectKey resultClass="java.lang.Integer" keyProperty="id">
+			select max(id) from secu_shortcut
+		</selectKey>
+	</insert>
+	<delete id="deleteShortcut" parameterClass="java.lang.Integer">
+		delete from secu_shortcut where id=#id# 
+	</delete>
+	<select id="getOperatorPermissionsForShortcut" parameterClass="java.lang.Integer" resultMap="permissionsResultForShortcut"> 
+	  select sp.id,sp.name,sp.icon,sp.parentId,sp.type,sp.webUrl, IF((SELECT id FROM  secu_shortcut WHERE permissions_id=sp.id AND operator_id=#operatorId#) IS NULL,0,1) AS checked
+   			FROM secu_permissions sp
+   			LEFT JOIN secu_role_permissions srp ON srp.permissions_id=sp.id
+   			LEFT JOIN secu_operator_role sor ON sor.role_id=srp.role_id
+   			WHERE  sp.enabled=1 AND sp.type=1 AND sor.role_id IN(SELECT id FROM secu_role WHERE enabled=1 )
+   			        AND sor.operator_id=#operatorId# 
+	</select>
+	<select id="getShortcutByCurrentOperator" parameterClass="java.lang.Integer" resultMap="shortcutSimpleResult"> 
+         SELECT ss.id,ss.permissions_id as permissionsId, 
+                ss.sequence,sp.name,sp.bgColor,sp.webUrl,sp.icon
+            FROM secu_shortcut ss 
+		    LEFT JOIN secu_permissions sp ON sp.id=ss.permissions_id
+		    WHERE  sp.enabled=1 and ss.operator_id=#operatorId# order by sequence  DESC   
+	</select>
+	<sql id="sql_where">
+		<dynamic>
+			<isNotEmpty prepend=" and " property="s.name"> ss.name like concat('%', #s.name#, '%') escape '/'</isNotEmpty>
+			<isNotEmpty prepend=" and " property="s.operatorId"> ss.operator_id=#s.operatorId#</isNotEmpty>
+		</dynamic>
+	</sql>
+	<select id="countShortcut" parameterClass="java.util.Map" resultClass="java.lang.Long">
+		<include refid="common.sql_count" />
+		secu_shortcut ss where 1=1
+		<include refid="sql_where" />
+	</select>
+   <select id="listShortcut" resultMap="shortcutResult" parameterClass="java.util.Map">
+		SELECT ss.id,ss.sequence,ss.createUser,ss.createDate,ss.updateUser,ss.updateDate,
+		       sp.name,sp.bgColor,sp.webUrl,sp.icon 
+            FROM secu_shortcut ss 
+		    LEFT JOIN secu_permissions sp ON sp.id=ss.permissions_id
+		    WHERE  sp.enabled=1 
+		<include refid="sql_where" />
+		<isNotPropertyAvailable property="sort">order by ss.updateDate desc</isNotPropertyAvailable>
+		<isPropertyAvailable property="sort">order by $sort$</isPropertyAvailable>
+		<include refid="common.sql_limit" />
+	</select>
+	<select id="getShortcutCountByOperatorId" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		<include refid="common.sql_count" />
+		secu_shortcut ss where ss.operator_id=#operatorId#
+	</select>
+</sqlMap>

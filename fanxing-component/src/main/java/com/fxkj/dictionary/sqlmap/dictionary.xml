@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap 
+PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="dictionary">
+	<typeAlias alias="Dictionary" type="com.fxkj.dictionary.entity.Dictionary" />
+	<resultMap id="dicResult" class="Dictionary">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="code" column="code" />
+		<result property="parentId" column="parentId" />
+		<result property="leaf" column="leaf" />
+		<result property="enabled" column="enabled" />
+		<result property="sequence" column="sequence" />
+		<result property="createUser" column="createUser" />
+		<result property="updateUser" column="updateUser" />
+		<result property="createDate" column="createDate" />
+		<result property="updateDate" column="updateDate" />
+	</resultMap>
+	<insert id="addDictionary" parameterClass="Dictionary">
+		insert into
+		secu_dictionary(name,code,parentId,leaf,enabled,sequence,createUser,updateUser,createDate,updateDate)
+		values(#name#,#code#,#parentId#,#leaf#,#enabled#,#sequence#,#createUser#,#updateUser#,#createDate#,#updateDate#)
+		<selectKey resultClass="java.lang.Integer" keyProperty="id">
+			select max(id) from secu_dictionary
+		</selectKey>
+	</insert>
+	<sql id="sql_where">
+		<dynamic>
+			<isNotEmpty prepend=" and " property="d.name"> (sd.name like concat('%', #d.name#, '%') escape '/' or sd.code like concat('%', #d.name#, '%') escape '/')</isNotEmpty>
+			<isNotEmpty prepend=" and " property="d.parentId">sd.parentId=#d.parentId#</isNotEmpty>
+			<isEmpty    prepend=" and " property="d.parentId">sd.parentId is null</isEmpty>
+			<isNotEmpty prepend=" and " property="d.leaf"> sd.leaf=#d.leaf#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="d.enabled"> sd.enabled=#d.enabled#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="d.updateTimeStart"> sd.updateDate &gt;= concat(#d.updateTimeStart#,' 00:00:00')</isNotEmpty>
+			<isNotEmpty prepend=" and " property="d.updateTimeEnd"> sd.updateDate &lt;=concat(#d.updateTimeEnd#,' 23:59:59')</isNotEmpty>
+		</dynamic>
+	</sql>
+	<select id="countDic" parameterClass="java.util.Map" resultClass="java.lang.Long">
+		<include refid="common.sql_count" />
+		secu_dictionary sd where 1=1
+		<include refid="sql_where" />
+	</select>
+	<select id="listDic" resultMap="dicResult" parameterClass="java.util.Map">
+		select * from secu_dictionary sd where 1=1
+		<include refid="sql_where" />
+		<isNotPropertyAvailable property="sort">order by sd.updateDate desc</isNotPropertyAvailable>
+		<isPropertyAvailable property="sort">order by $sort$</isPropertyAvailable>
+		<include refid="common.sql_limit" />
+	</select>
+	<select id="getDicItemByParentCode" parameterClass="java.lang.String"
+		resultMap="dicResult">
+		SELECT * FROM secu_dictionary sd WHERE
+		sd.parentId=(SELECT id FROM secu_dictionary WHERE code=#code# AND enabled=1 AND leaf=1 ) AND sd.leaf=2 AND sd.enabled=1
+	</select>
+	
+	
+	<select id="checkCodeRepeatByLeaf" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+     select id from    secu_dictionary sd where sd.code=#code# and sd.leaf=#leaf#
+        	<isNotEmpty prepend=" and " property="parentId">sd.parentId=#parentId#</isNotEmpty>
+			<isEmpty    prepend=" and " property="parentId">sd.parentId is null</isEmpty>
+	</select>
+	
+	 <update id="changeEnabled" parameterClass="java.util.Map">
+		update secu_dictionary set enabled=#flg#  where  id=#id# or parentId =#id#
+	</update>
+	
+	
+	
+</sqlMap>

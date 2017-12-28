@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<security:beans xmlns:security="http://www.springframework.org/schema/beans"
+	xmlns="http://www.springframework.org/schema/security" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+            http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.1.xsd
+           http://www.springframework.org/schema/security
+           http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+	<http access-denied-page="/resources/common/error/401.jsp"
+		auto-config="true" use-expressions="true">
+		<intercept-url pattern="/resources/**" access="permitAll" />
+		<intercept-url pattern="/upload/**" access="permitAll" />
+		<intercept-url pattern="/login.jsp*" access="permitAll" />
+		<intercept-url pattern="/wechatController/receiveMsg.do*" access="permitAll" />
+		<intercept-url pattern="/**/*NoAuth.do*" access="permitAll" />
+		
+		<!-- isAuthenticated()表示只有通过验证的用户才能访问 -->
+		<intercept-url pattern="/**" access="isAuthenticated()" />
+		<!-- 登录 -->
+		<form-login login-page="/login.jsp" login-processing-url="/j_spring_security_check"
+			authentication-failure-url="/login.jsp?error=true"
+			always-use-default-target="true"
+			default-target-url="/loginController/system_main.do" />
+		<!-- 退出系统跳转页面 -->
+		<logout invalidate-session="true" logout-url="/j_spring_security_logout"
+			logout-success-url="/login.jsp" />
+		<!-- 会话管理 session-fixation-protection="none" -->
+		<session-management  invalid-session-url="/login.jsp" session-authentication-strategy-ref="sas" >
+		<!--   允许几个用户同时登录
+			<concurrency-control max-sessions="1"
+				error-if-maximum-exceeded="true" /> 
+		    <concurrency-control max-sessions="1" error-if-maximum-exceeded="true" expired-url= "/login.jsp?error=expired"/> -->
+		</session-management>
+		<custom-filter before="FILTER_SECURITY_INTERCEPTOR" ref="myFilter" />
+	</http>
+	<!-- 一个自定义的filter，必须包含authenticationManager,accessDecisionManager,securityMetadataSource三个属性， -->
+	<security:bean id="myFilter"
+		class="com.fxkj.core.security.MyFilterSecurityInterceptor">
+		<security:property name="authenticationManager" ref="authenticationManager"></security:property>
+		<security:property name="accessDecisionManager"
+			ref="myAccessDecisionManagerBean"></security:property>
+		<security:property name="securityMetadataSource"
+			ref="securityMetadataSource"></security:property>
+	</security:bean>
+
+
+	<!-- 认证管理器，实现用户认证的入口，主要实现UserDetailsService接口即可 -->
+	<authentication-manager alias="authenticationManager">
+		<authentication-provider user-service-ref="myUserDetailService">
+			<password-encoder hash="md5" />
+		</authentication-provider>
+	</authentication-manager>
+
+	<!-- 用户认证 -->
+	<security:bean id="myUserDetailService"
+		class="com.fxkj.core.security.MyUserDetailService" />
+
+	<!-- 访问决策器，决定某个用户具有的角色，是否有足够的权限去访问某个资源 -->
+	<security:bean id="myAccessDecisionManagerBean"
+		class="com.fxkj.core.security.MyAccessDecisionManager" />
+
+	<!-- 资源源数据定义，即定义某一资源可以被哪些角色访问 -->
+	<security:bean id="securityMetadataSource"
+		class="com.fxkj.core.security.MyInvocationSecurityMetadataSource">
+		<security:constructor-arg name="roleDao"
+			ref="roleDao"></security:constructor-arg>
+		<security:constructor-arg name="permissionsDao"
+			ref="permissionsDao"></security:constructor-arg>
+		<security:constructor-arg name="redisService"
+			ref="redisService"></security:constructor-arg>
+	</security:bean>
+
+	<!-- 国际化classpath:org/springframework/security/messages_zh_CN
+	<security:bean id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<security:property name="basename"
+			value="classpath:config/i18n/messages_zh_CN"></security:property>
+	</security:bean> -->
+	
+	<!-- 限制用户登录数（如果IP相同，后登录的session信息覆盖先登录的session信息(防止用户非正常关闭浏览器导致登录不上)） -->
+	<security:bean id="sas" class="com.fxkj.core.security.session.SessionFixationCustom">
+	  	<security:property name="maximumSessions" value="1"></security:property>
+	  	<security:property name="exceptionIfMaximumExceeded" value="true"></security:property>
+	  	 <security:constructor-arg name="sessionRegistry" ref="sessionRegistry"></security:constructor-arg> 
+  </security:bean>
+  <security:bean id="sessionRegistry" class="org.springframework.security.core.session.SessionRegistryImpl"></security:bean>
+
+</security:beans>

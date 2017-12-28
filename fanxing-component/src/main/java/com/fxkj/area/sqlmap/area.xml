@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap 
+PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="area">
+	<typeAlias alias="Area" type="com.fxkj.area.entity.Area" />
+	<resultMap id="areaResult" class="Area">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="fullName" column="full_name" />
+		<result property="code" column="code" />
+		<result property="namePath" column="name_path" />
+		<result property="codePath" column="code_path" />
+		<result property="parentId" column="parentId" />
+		<result property="parentCode" column="parentCode" />
+		<result property="level" column="level" />
+		<result property="leaf" column="leaf" />
+		<result property="status" column="status" />
+		<result property="createDate" column="createDate" />
+		<result property="updateDate" column="updateDate" />
+	</resultMap>
+	
+	<resultMap id="areaListResult" class="Area" extends="areaResult">
+		<result property="isParent" column="isParent" />
+	</resultMap>
+	
+	<select id="listArea" resultMap="areaListResult" parameterClass="java.util.Map">
+		SELECT sa.*,IF((sa.leaf=0),1,0) AS isParent FROM secu_area sa WHERE sa.status=1
+		<isNotEmpty prepend=" and "  property="nameOrCode"> 
+		 sa.name like concat('%',#nameOrCode#, '%') escape '/' or 
+		      sa.code like concat(#nameOrCode#, '%') escape '/' ORDER BY level limit 10</isNotEmpty>
+		<isNotNull property="flg">
+			<isNotNull  prepend=" and "  property="parentId">sa.parentId=#parentId# </isNotNull>
+			<isNull     prepend=" and "  property="parentId">sa.parentId is null</isNull>
+		</isNotNull>
+	</select>
+	
+	<select id="searchAreaByNameOrCode" resultMap="areaResult"  parameterClass="java.lang.String">
+		SELECT sa.* FROM secu_area sa WHERE sa.status=1 and sa.name like concat('%',#nameOrCode#, '%') escape '/' or 
+		sa.code like concat(#nameOrCode#, '%') escape '/' ORDER BY level limit 10
+	</select>
+	
+	<select id="getAreaByCode" resultMap="areaResult"  parameterClass="java.lang.String">
+		SELECT sa.* FROM secu_area sa WHERE sa.status=1 and  sa.code =#code# ORDER BY level
+	</select>
+
+</sqlMap>
