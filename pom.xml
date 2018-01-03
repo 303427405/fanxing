@@ -16,6 +16,7 @@
         <module>fanxing-erp</module>
         <module>fanxing-security</module>
         <module>fanxing-api</module>
+        <module>fanxing-pay</module>
     </modules>
 
 

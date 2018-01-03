@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+        PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="marketInfo">
+    <typeAlias alias="MarketInfo" type="com.fxkj.market.entity.MarketInfo" />
+    <resultMap id="marketInfoResult" class="MarketInfo">
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="code" property="code"/>
+        <result column="address" property="address"/>
+        <result column="photo_max_url" property="photoMaxUrl"/>
+        <result column="area_code" property="areaCode"/>
+        <result column="enabled" property="enabled"/>
+        <result column="status" property="status"/>
+        <result column="content" property="content"/>
+        <result column="remark" property="remark"/>
+        <result property="areaName" column="areaName" />
+        <result column="create_user" property="createUser"/>
+        <result column="create_date" property="createDate"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_date" property="updateDate"/>
+    </resultMap>
+
+    <insert id="addMarketInfo" parameterClass="MarketInfo">
+        insert into
+        p_market(name,code,address,photo_max_url,area_code,create_user,update_user,create_date,update_date)
+        values(#name#,#code#,#address#,#photoMaxUrl#,#areaCode#,#createUser#,#updateUser#,#createDate#,#updateDate#)
+        <selectKey resultClass="java.lang.Integer" keyProperty="id">
+            select max(id) from p_market
+        </selectKey>
+    </insert>
+
+    <sql id="sql_where">
+        <dynamic>
+            <isNotEmpty prepend=" and " property="d.name"> (sm.name like concat('%', #searcher.name#, '%') escape '/' or sd.code like concat('%', #d.name#, '%') escape '/')</isNotEmpty>
+            <isNotEmpty prepend=" and " property="d.enabled"> sm.enabled=#searcher.enabled#</isNotEmpty>
+            <isNotEmpty prepend=" and " property="d.updateTimeStart"> sm.update_date &gt;= concat(#searcher.updateTimeStart#,' 00:00:00')</isNotEmpty>
+            <isNotEmpty prepend=" and " property="d.updateTimeEnd"> sm.update_date &lt;=concat(#searcher.updateTimeEnd#,' 23:59:59')</isNotEmpty>
+        </dynamic>
+    </sql>
+
+    <select id="countMarketInfo" parameterClass="java.util.Map" resultClass="java.lang.Long">
+        <include refid="common.sql_count" />
+        p_market sm where 1=1
+        <include refid="sql_where" />
+    </select>
+
+    <select id="listMarketInfo" resultMap="marketInfoResult" parameterClass="java.util.Map">
+        select sm.*,sa.full_name as areaName
+        from p_market sm
+        left join secu_area sa on sa.code=sm.area_code
+        where 1=1
+        AND sm.status = 1
+        <include refid="sql_where" />
+        <isNotPropertyAvailable property="sort">order by sm.update_date desc</isNotPropertyAvailable>
+        <isPropertyAvailable property="sort">order by $sort$</isPropertyAvailable>
+        <include refid="common.sql_limit" />
+    </select>
+
+
+    <update id="changeEnabled" parameterClass="java.util.Map">
+        update p_market set enabled=#flg#  where  id=#id#
+    </update>
+
+
+    <select id="getMarketInfoyId" parameterClass="java.lang.Integer"  resultMap="marketInfoResult">
+        select so.*,sa.full_name as areaName
+        from p_market so
+        left join secu_area sa on sa.code=so.area_code  where so.id=#id#
+    </select>
+
+
+    <update id="updateMarketInfoById" parameterClass="MarketInfo">
+        update p_market set
+        <dynamic>
+            <isNotNull  property="name"> name=#name#</isNotNull>
+            <isNotNull prepend="," property="address"> address=#address#</isNotNull>
+            <isNotNull prepend="," property="remark"> remark=#remark#</isNotNull>
+        </dynamic>
+        WHERE id=#id#
+    </update>
+
+
+</sqlMap>

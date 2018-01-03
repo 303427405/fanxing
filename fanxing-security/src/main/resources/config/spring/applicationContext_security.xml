@@ -72,12 +72,12 @@
 			ref="redisService"></security:constructor-arg>
 	</security:bean>
 
-	<!-- 国际化classpath:org/springframework/security/messages_zh_CN
+	<!-- 国际化classpath:org/springframework/security/messages_zh_CN-->
 	<security:bean id="messageSource"
 		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
 		<security:property name="basename"
 			value="classpath:config/i18n/messages_zh_CN"></security:property>
-	</security:bean> -->
+	</security:bean>
 	
 	<!-- 限制用户登录数（如果IP相同，后登录的session信息覆盖先登录的session信息(防止用户非正常关闭浏览器导致登录不上)） -->
 	<security:bean id="sas" class="com.fxkj.core.security.session.SessionFixationCustom">

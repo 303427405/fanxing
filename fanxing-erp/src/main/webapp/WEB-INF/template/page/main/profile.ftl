@@ -75,6 +75,7 @@
 					<span class="timeline-seperator text-center"> <span>我的权限</span></span>
 					<br>
 					   [#list list as r]
+                       qwqw
 								          <div class="user" title="${r.description}">
 								          	${r.roleName}
 								          </div>

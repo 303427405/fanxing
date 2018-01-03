@@ -13,7 +13,7 @@
 
 	<tag>
 		<name>auth</name>
-		<tag-class>com.haibao.core.security.tag.AuthorizationTag</tag-class>
+		<tag-class>com.fxkj.core.security.tag.AuthorizationTag</tag-class>
 		<description>
             A simple tag to output or not the body of the tag if the principal
             has or doesn't have certain authorities.

@@ -42,7 +42,7 @@ public class LocalInitDbTool {
 			IllegalAccessException, SAXException, ParserConfigurationException {
 		Properties props = System.getProperties(); // 获得系统属性集
 		String osName = props.getProperty("os.name"); // 操作系统名称
-		if (osName != null && osName.startsWith("Windows")) {
+		if (osName != null && (osName.startsWith("Windows")||osName.startsWith("Mac"))) {
 			// 连接数据库信息的配置文件
 			Properties properties = new Properties();
 			InputStream in = LocalInitDbTool.class
@@ -65,9 +65,9 @@ public class LocalInitDbTool {
 					.getValue("sqlName").split(";");
 			System.out.println("..........初始化本地数据库................");
 			for (int i = 0; i < sqlList.length; i++) {
-				System.out.println("执行本地数据库sql: " + sqlList[i]);
+				System.out.println("执行本地数据库sql: /sql/" + sqlList[i]);
 				InputStream is = LocalInitDbTool.class
-						.getResourceAsStream("/sql/" + sqlList[i]);
+						.getResourceAsStream("/sql/createTable.sql");
 				if (is != null) {
 					execute(url, uid, pwd, is, driverName);
 				} else {
@@ -75,8 +75,9 @@ public class LocalInitDbTool {
 				}
 			}
 			System.out.println("..........本地数据库初始化完毕................");
-			boolean flg = InitDbUtil.initSystemDb("dev");
-			if (flg == true) {
+			//boolean flg = InitDbUtil.initSystemDb("dev");
+            boolean flg=true;
+            if (flg == true) {
 				String sql = ProperitiesUtil.getInstance().getValue(
 						"appointLocalSql");
 				if (sql != null && !"".equals(sql)) {

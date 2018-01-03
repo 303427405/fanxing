@@ -24,13 +24,11 @@ public class OrganizationServiceImpl extends BaseService implements
 	@Autowired
 	private OrganizationDao organizationDao;
 
-	@Override
 	public PageInfo<Organization> findOrganization(
 			Map<String, Object> parameterMap) {
 		return organizationDao.findOrganization(parameterMap);
 	}
 
-	@Override
 	public MsgUtil addOrganization(Organization o) {
 		if (o != null && o.getAreaCode() != null) {
 			o.setCode(o.getAreaCode()+"_"+DateUtils.longDate());
@@ -44,7 +42,6 @@ public class OrganizationServiceImpl extends BaseService implements
 
 	}
 
-	@Override
 	public MsgUtil updateOrganizationById(Organization o) {
 		if (o.getId() != null) {
 			int temp = organizationDao.updateOrganizationById(o);
@@ -55,18 +52,15 @@ public class OrganizationServiceImpl extends BaseService implements
 		}
 	}
 
-	@Override
 	public Organization getOrganizationById(Integer id) {
 		return organizationDao.getOrganizationById(id);
 	}
 
 
-	@Override
 	public List<Organization> getOrganizationByAreaCode(String areaCode) {
 		return organizationDao.getOrganizationByAreaCode(areaCode);
 	}
 
-	@Override
 	public MsgUtil changeEnabled(Integer id, Boolean flg) {
 		if (id != null && flg != null) {
 			Map<String, Object> map = new HashMap<String, Object>();

@@ -47,7 +47,7 @@
 		<!--******** 打印URL的过滤器 打印访问路径的过滤器在项目开发中用于帮助调试。************
 	<filter>
 		<filter-name>PrintURLFilter</filter-name>
-		<filter-class>com.haibao.core.utils.PrintURLFilter</filter-class>
+		<filter-class>com.fanxing.core.utils.PrintURLFilter</filter-class>
 		<init-param>
 			<param-name>suffix</param-name>
 			<param-value>.jsp,.html,.do,.action</param-value>

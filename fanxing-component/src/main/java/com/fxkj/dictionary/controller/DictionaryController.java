@@ -32,7 +32,6 @@ public class DictionaryController extends BaseAction {
 		parameterMap.put("d", search);
 		modelMap.put("page", dictionaryService.findDictionary(parameterMap));
 		modelMap.put("d", search);
-		modelMap.put("enabledEnum", EnabledEnum.values());
 		return "page/dictionary/list";
 	}
 

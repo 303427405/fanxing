@@ -56,7 +56,7 @@
 							              [/#if]
 							       [/#list]
 						      </ul>
-					     </li>  
+					     </li>
 				    [/#if]
 				  [/#list]
 		       </ul>

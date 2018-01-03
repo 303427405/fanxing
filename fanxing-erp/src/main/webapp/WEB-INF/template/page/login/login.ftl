@@ -30,10 +30,10 @@
 			<div id="content" class="container">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-7 col-lg-8 hidden-xs hidden-sm">
-						<h1 class="txt-color-red login-header-big">海宝</h1>
+						<h1 class="txt-color-red login-header-big">樊兴科技</h1>
 						<div class="hero">
 							<div class="pull-left login-desc-box-l">
-								<h4 class="paragraph-header">欢迎使用海宝后台管理系统!</h4>
+								<h4 class="paragraph-header">欢迎使用樊兴供应链后台管理系统!</h4>
 								<div class="login-app-icons">
 									<a href="javascript:void(0);" class="btn btn-danger btn-sm">了解我们</a>
 								</div>

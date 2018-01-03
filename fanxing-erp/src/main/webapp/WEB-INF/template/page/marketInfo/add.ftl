@@ -11,7 +11,7 @@
 			<div class="jarviswidget" id="wid-id-1"    data-widget-fullscreenbutton="false"   >
 			   <header>
 					<span class="widget-icon"> <i class="fa fa-plus-circle"></i></span>
-						<strong>&nbsp&nbsp新增组织</strong>
+						<strong>&nbsp&nbsp新增市场</strong>
 				</header>
 			    <div id="formContent"> 
 				    <div class="widget-body fuelux">
@@ -32,25 +32,27 @@
 												<button type="button" id="submit" class="btn btn-sm btn-success btn-next" data-last="保存">
 													下一步<i class="fa fa-arrow-right"></i>
 												</button>
-												<button type="button" data-returnUrl="/organizationController/findOrganization.do" class="btn btn-sm btn-info" id="cancel">
+												<button type="button" data-returnUrl="/marketInfoController/findMarketInfo.do" class="btn btn-sm btn-info" id="cancel">
 													<i class="fa fa-location-arrow"></i> 取消
 												</button>
 											</div>
 						 </div>
 						 <div class="step-content">
-				             <form id="addForm" class="smart-form" returnUrl="/organizationController/findOrganization.do" action="/organizationController/addOrganization.do">
+				             <form id="addForm" class="smart-form" returnUrl="/marketInfoController/findMarketInfo.do" action="/marketInfoController/addMarketInfo.do">
 				              <div class="step-pane active" id="step1">
 				                 <fieldset>
                                     <div class="row">
-                                        <section >
+                                        <section>
                                             <label class="input"> <i class="icon-append fa fa-user"></i>
-                                                <input type="text" name="name" placeholder="组织名称">
+                                                <input type="text" name="name" placeholder="市场名称">
                                                  </label>
                                             </label>
                                         </section>
                                     </div>
+
+
                                     <div class="row">
-                                        <section >
+                                     <section >
                                             <label class="textarea textarea-resizable"><i class="icon-append fa fa-comment"></i>
                                                 <textarea rows="3" name="remark" placeholder="备注" class="custom-scroll"></textarea>
                                             </label>
@@ -66,6 +68,16 @@
 												  <input type="hidden" name="areaCode" id="areaCode" placeholder="所属区域">
 												</label>
 											</section>
+
+                                    <div class="row">
+                                        <section>
+                                            <label class="input">
+                                                <input type="text" name="address"  placeholder="详细地址">
+                                            </label>
+                                        </section>
+
+                                    </div>
+
 									<div class="row">
 										 <section class="col col-4" >
 												<label class="input"><i class="icon-append fa fa-map-marker"></i>
