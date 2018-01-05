@@ -17,7 +17,8 @@ function zTreeOnCheck(event,treeId,treeNode) {
 	if(treeNode.checked==true){
 		$('#areaCodeName').val(treeNode.fullName);
 		$('#areaCode').val(treeNode.code);
-	}else{
+        $('#areaCodeName').change();
+    }else{
 		$('#areaCodeName').val('');
 		$('#areaCode').val('');
 	}
@@ -30,7 +31,8 @@ function zTreeOnClick(event,treeId,treeNode) {
 	treeObj.checkNode(treeNode, true, false);
 	$('#areaCodeName').val(treeNode.fullName);
 	$('#areaCode').val(treeNode.code);
-	return true;
+    $('#areaCodeName').change();
+    return true;
 }
 
 function beforeExpand(treeId, treeNode) {

@@ -2,8 +2,10 @@ package com.fxkj.market.controller;
 
 import com.fxkj.core.base.BaseAction;
 import com.fxkj.core.base.MsgUtil;
+import com.fxkj.dictionary.bean.DictionaryBean;
 import com.fxkj.enums.EnabledEnum;
 import com.fxkj.market.bean.MarketInfoSearcher;
+import com.fxkj.market.bean.MarketInfoVO;
 import com.fxkj.market.entity.MarketInfo;
 import com.fxkj.market.service.MarketInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,7 +40,6 @@ public class MarketInfoController extends BaseAction{
         modelMap.put("enabledEnum", EnabledEnum.values());
         return "page/marketInfo/list";
     }
-
 
 
     @RequestMapping(value = "view", method = RequestMethod.POST)
@@ -78,6 +80,12 @@ public class MarketInfoController extends BaseAction{
     @ResponseBody
     public MsgUtil updateOrganizationById(MarketInfo marketInfo) {
         return marketInfoService.updateMarketInfoById(marketInfo);
+    }
+
+    @RequestMapping(value = "findMarketInfoByCode", method = RequestMethod.POST)
+    @ResponseBody
+    public List<MarketInfoVO> findMarketInfoByCode(String areaCode) {
+        return marketInfoService.findMarketInfoByCode(areaCode);
     }
 
 

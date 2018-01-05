@@ -11,12 +11,14 @@
 	<http access-denied-page="/resources/common/error/401.jsp"
 		auto-config="true" use-expressions="true">
 		<intercept-url pattern="/resources/**" access="permitAll" />
-		<intercept-url pattern="/upload/**" access="permitAll" />
-		<intercept-url pattern="/login.jsp*" access="permitAll" />
-		<intercept-url pattern="/wechatController/receiveMsg.do*" access="permitAll" />
+        <intercept-url pattern="/upload/**" access="permitAll" />
+        <intercept-url pattern="/login.jsp*" access="permitAll" />
 		<intercept-url pattern="/**/*NoAuth.do*" access="permitAll" />
-		
-		<!-- isAuthenticated()表示只有通过验证的用户才能访问 -->
+        <intercept-url pattern="/**/*Api.do*" access="permitAll" />
+
+
+
+        <!-- isAuthenticated()表示只有通过验证的用户才能访问 -->
 		<intercept-url pattern="/**" access="isAuthenticated()" />
 		<!-- 登录 -->
 		<form-login login-page="/login.jsp" login-processing-url="/j_spring_security_check"

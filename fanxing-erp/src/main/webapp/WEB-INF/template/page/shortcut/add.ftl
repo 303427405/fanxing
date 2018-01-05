@@ -17,19 +17,19 @@
 				    <div class="widget-body fuelux">
 				        <div class="widget-body fuelux">
 				          <div class="wizard">
-											<ul class="steps">
-												<li data-target="#step1" class="active">
-													<span class="badge badge-info">1</span>基本信息<span class="chevron"></span>
-												</li>
-											</ul>
-											<div class="actions">
-												<button type="button" id="submit" class="btn btn-sm btn-success btn-next" data-last="保存">
-													保存<i class="fa fa-arrow-right"></i>
-												</button>
-												<button type="button" data-returnUrl="/shortcutController/findShortcut.do" class="btn btn-sm btn-info" id="cancel">
-													<i class="fa fa-location-arrow"></i> 取消
-												</button>
-											</div>
+                                <ul class="steps">
+                                    <li data-target="#step1" class="active">
+                                        <span class="badge badge-info">1</span>基本信息<span class="chevron"></span>
+                                    </li>
+                                </ul>
+                                <div class="actions">
+                                    <button type="button" id="submit" class="btn btn-sm btn-success btn-next" data-last="保存">
+                                        保存<i class="fa fa-arrow-right"></i>
+                                    </button>
+                                    <button type="button" data-returnUrl="/shortcutController/findShortcut.do" class="btn btn-sm btn-info" id="cancel">
+                                        <i class="fa fa-location-arrow"></i> 取消
+                                    </button>
+                                </div>
 						 </div>
 						 <div class="step-content">
 				             <form id="addForm" class="smart-form" returnUrl="/shortcutController/findShortcut.do" action="/shortcutController/addShortcut.do" method="post">

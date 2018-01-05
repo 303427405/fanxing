@@ -15,7 +15,6 @@
         <result column="status" property="status"/>
         <result column="content" property="content"/>
         <result column="remark" property="remark"/>
-        <result property="areaName" column="areaName" />
         <result column="create_user" property="createUser"/>
         <result column="create_date" property="createDate"/>
         <result column="update_user" property="updateUser"/>
@@ -56,6 +55,14 @@
         <isNotPropertyAvailable property="sort">order by sm.update_date desc</isNotPropertyAvailable>
         <isPropertyAvailable property="sort">order by $sort$</isPropertyAvailable>
         <include refid="common.sql_limit" />
+    </select>
+
+
+    <select id="findMarketInfoByCode" resultMap="marketInfoResult" parameterClass="java.lang.String">
+        select *
+        from p_market
+        where 1=1
+        AND status = 1 AND area_code like concat('%', #areaCode#, '%') AND enabled = 1
     </select>
 
 

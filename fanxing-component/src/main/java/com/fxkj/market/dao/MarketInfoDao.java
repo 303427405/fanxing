@@ -1,8 +1,10 @@
 package com.fxkj.market.dao;
 
 import com.fxkj.core.base.PageInfo;
+import com.fxkj.market.bean.MarketInfoVO;
 import com.fxkj.market.entity.MarketInfo;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,6 +48,14 @@ public interface MarketInfoDao {
      * @return
      */
     Integer updateMarketInfoById(MarketInfo marketInfo);
+
+
+    /**
+     * 根据区域code 查询市场信息
+     * @param areaCode
+     * @return
+     */
+    List<MarketInfo> findMarketInfoByCode(String areaCode);
 
 
 

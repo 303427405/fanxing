@@ -14,8 +14,6 @@
  * data-org:是否带组织（true:false）
  * data-orgCode:后台传的组织code
  * 组织提交后台的参数【orgCode】
- * 
- * 
  */
 
 var $dictionary = $('#dictionaryData');
@@ -23,6 +21,7 @@ var $area= $('#selectArea');
 var optionUrl="/dictionaryController/getItemByParentCode.do";
 var areaUrl="/areaController/findArea.do";
 var orgUrl="/organizationController/getOrganizationByAreaCode.do";
+
 //下拉框样式
 $('select').addClass('form-control');
 var levelStr={'1':'国家',	'2':'省份','3':'市区','4':'区县','5':'街道'};

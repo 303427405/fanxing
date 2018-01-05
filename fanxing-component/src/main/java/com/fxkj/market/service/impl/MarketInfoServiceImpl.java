@@ -3,8 +3,11 @@ package com.fxkj.market.service.impl;
 import com.fxkj.core.base.BaseService;
 import com.fxkj.core.base.MsgUtil;
 import com.fxkj.core.base.PageInfo;
+import com.fxkj.core.utils.BeanUtil;
 import com.fxkj.core.utils.DateUtils;
+import com.fxkj.dictionary.bean.DictionaryBean;
 import com.fxkj.enums.EnabledEnum;
+import com.fxkj.market.bean.MarketInfoVO;
 import com.fxkj.market.dao.MarketInfoDao;
 import com.fxkj.market.entity.MarketInfo;
 import com.fxkj.market.service.MarketInfoService;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -95,5 +99,17 @@ public class MarketInfoServiceImpl  extends BaseService implements MarketInfoSer
         } else {
             return new MsgUtil(false, PARAM_MSG);
         }
+    }
+
+    /**
+     * 根据区域code 查询市场信息
+     * @param areaCode
+     * @return
+     */
+    public List<MarketInfoVO> findMarketInfoByCode(String areaCode) {
+        List<MarketInfo> marketInfos = marketInfoDao.findMarketInfoByCode(areaCode);
+        List<MarketInfoVO> marketInfoVOS =  BeanUtil.mapList(marketInfos,
+                MarketInfoVO.class);
+        return marketInfoVOS;
     }
 }

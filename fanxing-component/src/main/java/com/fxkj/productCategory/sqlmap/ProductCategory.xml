@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="productCategory">
+	<typeAlias alias="ProductCategory" type="com.fxkj.productCategory.entity.ProductCategory" />
+	<resultMap id="productCategoryResult" class="ProductCategory">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="code" column="code" />
+		<result property="parentId" column="parent_id" />
+		<result property="status" column="status" />
+		<result property="leaf" column="leaf" />
+		<result property="remark" column="remark" />
+		<result property="createUser" column="create_user" />
+		<result property="updateUser" column="update_user" />
+		<result property="createDate" column="create_date" />
+		<result property="updateDate" column="update_date" />
+	</resultMap>
+	<resultMap id="productCategoryListResult" extends="productCategoryResult" class="ProductCategory">
+	</resultMap>
+	
+	
+	
+	<insert id="addProductCategory" parameterClass="ProductCategory">
+		insert into p_product_category(name,code,parent_id,status,remark,create_user,update_user,create_date,update_date)
+		values(#name#,#code#,#parentId#,#status#,#remark#,#createUser#,#updateUser#,#createDate#,#updateDate#)
+		<selectKey resultClass="java.lang.Integer" keyProperty="id">
+			select max(id) from p_product_category</selectKey>
+	</insert>
+
+	<update id="changeEnabled" parameterClass="java.util.Map">
+		update p_product_category set status=#flg#  where  id=#id# or parent_id =#id#
+	</update>
+	
+	<sql id="sql_where">
+		<dynamic>
+			<isNotEmpty prepend=" and " property="pc.name"> pc.name like concat('%', #pc.name#, '%') escape '/'</isNotEmpty>
+			<isNotEmpty prepend=" and " property="pc.status"> pc.status=#pc.status#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="pc.leaf"> pc.leaf=#pc.leaf#</isNotEmpty>
+			<isNotEmpty prepend=" and " property="pc.parentId">pc.parent_id=#pc.parentId#</isNotEmpty>
+			<isEmpty    prepend=" and " property="pc.parentId">pc.parent_id is null</isEmpty>
+			<isNotEmpty prepend=" and " property="pc.updateTimeStart"> pc.update_date &gt;=concat(#pc.updateTimeStart#, ' 00:00:00') </isNotEmpty>
+			<isNotEmpty prepend=" and " property="pc.updateTimeEnd"> pc.update_date &lt;= concat(#pc.updateTimeEnd#, ' 23:59:59')</isNotEmpty>
+		</dynamic>
+	</sql>
+	
+	<select id="countProductCategory" parameterClass="java.util.Map" resultClass="java.lang.Long">
+		<include refid="common.sql_count" />
+		p_product_category pc where 1=1
+		<include refid="sql_where" />
+	</select>
+	<select id="listProductCategory" resultMap="productCategoryListResult" parameterClass="java.util.Map">
+		select pc.*
+		from p_product_category pc where 1=1
+		<include refid="sql_where" />
+		<isNotPropertyAvailable property="sort">order by pc.update_date desc</isNotPropertyAvailable>
+		<isPropertyAvailable property="sort">order by $sort$</isPropertyAvailable>
+		<include refid="common.sql_limit" />
+	</select>
+
+
+    <select id="getProductCategoryById" resultMap="productCategoryListResult"  parameterClass="java.lang.Integer" >
+        select pc.*
+        from p_product_category pc where  pc.id = #id#
+    </select>
+
+
+    <update id="updateProductCategoryById"  parameterClass="ProductCategory">
+        update p_product_category set
+        <dynamic>
+            <isNotNull  property="name"> name=#name#</isNotNull>
+            <isNotNull prepend="," property="remark"> remark=#remark#</isNotNull>
+            <isNotNull prepend="," property="parentId"> parent_id=#parentId#</isNotNull>
+        </dynamic>
+        WHERE id=#id#
+    </update>
+
+
+	
+</sqlMap>

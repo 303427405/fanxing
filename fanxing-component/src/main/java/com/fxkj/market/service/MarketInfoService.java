@@ -3,8 +3,10 @@ package com.fxkj.market.service;
 import com.fxkj.core.base.MsgUtil;
 import com.fxkj.core.base.PageInfo;
 import com.fxkj.dictionary.entity.Dictionary;
+import com.fxkj.market.bean.MarketInfoVO;
 import com.fxkj.market.entity.MarketInfo;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -54,6 +56,14 @@ public interface MarketInfoService {
      * @return
      */
     MsgUtil updateMarketInfoById(MarketInfo marketInfo);
+
+
+    /**
+     * 根据区域code 查询市场信息
+     * @param areaCode
+     * @return
+     */
+    List<MarketInfoVO> findMarketInfoByCode(String areaCode);
 
 
 }

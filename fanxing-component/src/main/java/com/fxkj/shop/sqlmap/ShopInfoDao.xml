@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="shopInfo">
+    <typeAlias alias="ShopInfo" type="com.fxkj.shop.entity.ShopInfo" />
+    <resultMap id="shopInfoResult" class="ShopInfo">
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="code" property="code"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="nick" property="nick"/>
+        <result column="description" property="description"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="market_code" property="marketCode"/>
+        <result column="area_code" property="areaCode"/>
+        <result column="address" property="address"/>
+        <result column="min_logo" property="minLogo"/>
+        <result column="big_logo" property="bigLogo"/>
+        <result column="id_number" property="idNumber"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="id_card_face" property="idCardFace"/>
+        <result column="id_card_back" property="idCardBack"/>
+        <result column="business_license_code" property="businessLicenseCode"/>
+        <result column="food_license_code" property="foodLicenseCode"/>
+        <result column="food_license" property="foodLicense"/>
+        <result column="business_license" property="businessLicense"/>
+        <result column="other_enclosure" property="otherEnclosure"/>
+        <result column="contact" property="contact"/>
+        <result column="contact_phone" property="contactPhone"/>
+        <result column="create_source" property="createSource"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="examine_status" property="examineStatus"/>
+        <result column="status" property="status"/>
+    </resultMap>
+
+    <sql id="sql_where">
+        <dynamic>
+            <isNotEmpty prepend=" and " property="ps.name"> ps.name like concat('%', #pc.name#, '%') escape '/'</isNotEmpty>
+            <isNotEmpty prepend=" and " property="ps.status"> ps.status=#ps.status#</isNotEmpty>
+            <isNotEmpty prepend=" and " property="ps.parentId">ps.parent_id=#ps.parentId#</isNotEmpty>
+            <isNotEmpty prepend=" and " property="ps.updateTimeStart"> ps.update_time &gt;=concat(#ps.updateTimeStart#, ' 00:00:00') </isNotEmpty>
+            <isNotEmpty prepend=" and " property="ps.updateTimeEnd"> ps.update_time &lt;= concat(#ps.updateTimeEnd#, ' 23:59:59')</isNotEmpty>
+        </dynamic>
+    </sql>
+
+    <select id="countShopInfo" parameterClass="java.util.Map" resultClass="java.lang.Long">
+        <include refid="common.sql_count" />
+        p_shop ps where 1=1
+        <include refid="sql_where" />
+    </select>
+    <select id="listShopList" resultMap="shopInfoResult" parameterClass="java.util.Map">
+        select ps.*
+        from p_shop ps where 1=1
+        <include refid="sql_where" />
+        <isNotPropertyAvailable property="sort">order by ps.update_time desc</isNotPropertyAvailable>
+        <isPropertyAvailable property="sort">order by $sort$</isPropertyAvailable>
+        <include refid="common.sql_limit" />
+    </select>
+
+
+    <insert id="addShopInfo" parameterClass="ShopInfo">
+        insert into
+        p_shop(name,username ,code,password,nick,description,parent_id,
+        market_code,area_code,address,min_logo,big_logo,id_number,start_time,
+        end_time,id_card_face,id_card_back,business_license_code,food_license_code,
+        food_license,business_license,other_enclosure,contact,
+        contact_phone,create_source,create_user,create_time,update_user,update_time,examine_status)
+        values(#name#,#username#,#code#,#password#,#nick#,#description#,#parentId#,
+        #marketCode#,#areaCode#,#address#,#minLogo#,#bigLogo#,#idNumber#,#startTime#,
+        #endTime#,#idCardFace#,#idCardBack#,#businessLicenseCode#,#foodLicenseCode#,
+        #foodLicense#,#businessLicense#,#otherEnclosure#,#contact#,
+        #contactPhone#,#createSource#,#createUser#,#createTime#,#updateUser#,#updateTime#,#examineStatus#)
+        <selectKey resultClass="java.lang.Integer" keyProperty="id">
+            select max(id) from p_shop
+        </selectKey>
+    </insert>
+
+
+    <update id="changeEnabled" parameterClass="java.util.Map">
+        update p_shop set status=#flg#  where  id=#id#
+    </update>
+
+
+
+
+
+
+
+
+</sqlMap>

@@ -2,10 +2,12 @@ package com.fxkj.market.dao.impl;
 
 import com.fxkj.core.base.BaseDaoImpl;
 import com.fxkj.core.base.PageInfo;
+import com.fxkj.market.bean.MarketInfoVO;
 import com.fxkj.market.dao.MarketInfoDao;
 import com.fxkj.market.entity.MarketInfo;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -62,6 +64,16 @@ public class MarketInfoDaoImpl extends BaseDaoImpl<MarketInfo> implements Market
      */
     public Integer updateMarketInfoById(MarketInfo marketInfo) {
         return (Integer) getSqlMapClientTemplate().update("marketInfo.updateMarketInfoById" , marketInfo);
+    }
+
+
+    /**
+     * 根据区域code 查询市场信息
+     * @param areaCode
+     * @return
+     */
+    public List<MarketInfo> findMarketInfoByCode(String areaCode) {
+        return (List<MarketInfo>) getSqlMapClientTemplate().queryForList("marketInfo.findMarketInfoByCode" , areaCode);
     }
 
 
