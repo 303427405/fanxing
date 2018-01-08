@@ -14,7 +14,7 @@
         <intercept-url pattern="/upload/**" access="permitAll" />
         <intercept-url pattern="/login.jsp*" access="permitAll" />
 		<intercept-url pattern="/**/*NoAuth.do*" access="permitAll" />
-        <intercept-url pattern="/**/*Api.do*" access="permitAll" />
+        <intercept-url pattern="/api/**" access="permitAll" />
 
 
 

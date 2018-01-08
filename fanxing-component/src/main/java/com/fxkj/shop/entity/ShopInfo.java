@@ -1,5 +1,7 @@
 package com.fxkj.shop.entity;
 
+import com.fxkj.enums.ShopTypeEnum;
+
 /**
  * 商户信息
  * Created By zhangyufei on 2018/1/3
@@ -69,6 +71,8 @@ public class ShopInfo {
     private Integer examineStatus;
 
     private Integer status;
+
+    private ShopTypeEnum shopTypeEnum;
 
     public Integer getId() {
         return id;
@@ -324,5 +328,16 @@ public class ShopInfo {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public ShopTypeEnum getShopTypeEnum() {
+        return shopTypeEnum;
+    }
+
+    public void setShopTypeEnum(ShopTypeEnum shopTypeEnum) {
+        if(shopTypeEnum != null){
+            this.createSource = shopTypeEnum.getCode();
+        }
+        this.shopTypeEnum = shopTypeEnum;
     }
 }

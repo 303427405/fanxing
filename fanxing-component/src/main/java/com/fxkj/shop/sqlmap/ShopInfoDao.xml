@@ -68,12 +68,12 @@
         market_code,area_code,address,min_logo,big_logo,id_number,start_time,
         end_time,id_card_face,id_card_back,business_license_code,food_license_code,
         food_license,business_license,other_enclosure,contact,
-        contact_phone,create_source,create_user,create_time,update_user,update_time,examine_status)
+        contact_phone,create_source,create_user,create_time,update_user,examine_status)
         values(#name#,#username#,#code#,#password#,#nick#,#description#,#parentId#,
         #marketCode#,#areaCode#,#address#,#minLogo#,#bigLogo#,#idNumber#,#startTime#,
         #endTime#,#idCardFace#,#idCardBack#,#businessLicenseCode#,#foodLicenseCode#,
         #foodLicense#,#businessLicense#,#otherEnclosure#,#contact#,
-        #contactPhone#,#createSource#,#createUser#,#createTime#,#updateUser#,#updateTime#,#examineStatus#)
+        #contactPhone#,#createSource#,#createUser#,#createTime#,#updateUser#,#examineStatus#)
         <selectKey resultClass="java.lang.Integer" keyProperty="id">
             select max(id) from p_shop
         </selectKey>

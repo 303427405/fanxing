@@ -56,7 +56,7 @@ jQuery.extend({
   jQuery(form).css('position', 'absolute');
   jQuery(form).css('top', '-1200px');
   jQuery(form).css('left', '-1200px');
-  jQuery(form).appendTo('body');  
+  jQuery(form).appendTo('body');
   return form;
     },
 

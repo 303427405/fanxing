@@ -44,7 +44,7 @@
 											</div>
 						 </div>
 						 <div class="step-content">
-				             <form id="addForm" class="smart-form" returnUrl="/shopController/findShop.do" action="/shopController/addShop.do">
+				             <form id="addForm" class="smart-form" enctype="multipart/form-data"  returnUrl="/shopController/findShop.do" action="/shopController/addShop.do">
 				              <div class="step-pane active" id="step1">
 				                 <fieldset>
                                     <div class="row">
@@ -131,8 +131,8 @@
                                     <div class="row">
                                         <section >
                                             <div class="form-group">
-                                                <select class="form-control" id="marketInfo"></select>
-                                            <input type="hidden" name="marketCode" id="marketCode" placeholder="市场地址">
+                                                <select class="form-control" id="marketCode" name="marketCode"></select>
+
                                         </section>
                                     </div>
 
@@ -171,17 +171,10 @@
                                          <div class="row">
                                              <section >
                                                  <label class="input"> <i class="icon-append fa fa-user"></i>
-                                                     <input type="text" name="createSource" placeholder="商户类型">
-                                                 </label>
-                                                 </label>
-                                             </section>
-                                         </div>
-
-                                         <div class="row">
-                                             <section >
-                                                 <label class="input"> <i class="icon-append fa fa-user"></i>
-                                                     <input type="text" name="parentId" placeholder="选择商户">
-                                                 </label>
+                                                     <select class="form-control" id="createSource" name="shopTypeEnum">
+                                                         <option value="SUPPLIER">供应商</option>
+                                                         <option value="PURCHASERS">采购商</option>
+                                                     </select>
                                                  </label>
                                              </section>
                                          </div>
@@ -191,7 +184,6 @@
                                                  <label class="input"> <i class="icon-append fa fa-user"></i>
                                                      <input type="text" name="startTime" placeholder="开始营业时间">
                                                  </label>
-                                                 </label>
                                              </section>
                                          </div>
 
@@ -200,7 +192,6 @@
                                              <section >
                                                  <label class="input"> <i class="icon-append fa fa-user"></i>
                                                      <input type="text" name="endTime" placeholder="结束营业时间">
-                                                 </label>
                                                  </label>
                                              </section>
                                          </div>
@@ -212,60 +203,61 @@
                                  <div class="step-pane" id="step4">
                                      <fieldset>
                                          <div class="row">
+
                                              <section >
-                                                 <label class="input"> <i class="icon-append fa fa-user"></i>
-                                                     <input type="text" name="" placeholder="身份证正面">
-                                                 </label>
-                                                 </label>
+                                                 <div class="input input-file">
+                                                     <span class="button"><input id="idCardFaceFile"  type="file" name="file" >浏览</span><input type="text" id="idCardFaceName" placeholder="请选择身份证正面">
+                                                 </div>
+                                                 <input type="hidden" id="idCardFace" name="idCardFace">
                                              </section>
                                          </div>
 
 
                                          <div class="row">
                                              <section >
-                                                 <label class="input"> <i class="icon-append fa fa-user"></i>
-                                                     <input type="text" name="" placeholder="身份证反面">
+                                                 <label class="input input-file"">
+                                                     <span class="button"><input id="idCardBackFile"  type="file" name="file" >浏览</span><input type="text" id="idCardBackName" placeholder="请选择身份证背面">
                                                  </label>
-                                                 </label>
+                                                 <input type="hidden" name="idCardBack" id = "idCardBack" >
                                              </section>
                                          </div>
 
 
                                          <div class="row">
                                              <section >
-                                                 <label class="input"> <i class="icon-append fa fa-user"></i>
-                                                     <input type="text" name="" placeholder="商户大图">
+                                                 <label class="input input-file"">
+                                                     <span class="button"><input id="bigLogoFile"  type="file" name="file" >浏览</span><input type="text" id="bigLogoName" placeholder="请选择商户大图">
                                                  </label>
-                                                 </label>
+                                                 <input type="hidden" name="bigLogo" placeholder="商户大图" id="bigLogo">
                                              </section>
                                          </div>
 
                                          <div class="row">
+                                             <section >
+                                                 <label class="input input-file"">
+                                                     <span class="button"><input id="minLogoFile"  type="file" name="file" >浏览</span><input type="text" id="minLogoName" placeholder="请选择商户小图">
+                                                 </label>
+                                                 <input type="hidden" name="minLogo" placeholder="商户小图" id="minLogo">
+                                             </section>
+                                         </div>
+
+
+                                     <div class="row">
                                          <section >
-                                             <label class="input"> <i class="icon-append fa fa-user"></i>
-                                                 <input type="text" name="" placeholder="商户小图">
+                                             <label class="input input-file"">
+                                                 <span class="button"><input id="businessLicenseFile"  type="file" name="file" >浏览</span><input type="text" id="businessLicenseName" placeholder="请选择商户营业执照">
                                              </label>
-                                             </label>
+                                             <input type="hidden" name="businessLicense" placeholder="营业执照" id="businessLicense">
                                          </section>
                                      </div>
 
 
                                      <div class="row">
                                          <section >
-                                             <label class="input"> <i class="icon-append fa fa-user"></i>
-                                                 <input type="text" name="" placeholder="营业执照">
+                                             <label class="input input-file"">
+                                                 <span class="button"><input id="foodLicenseFile"  type="file" name="file" >浏览</span><input type="text" id="foodLicenseName" placeholder="请选择商户食品许可证">
                                              </label>
-                                             </label>
-                                         </section>
-                                     </div>
-
-
-                                     <div class="row">
-                                         <section >
-                                             <label class="input"> <i class="icon-append fa fa-user"></i>
-                                                 <input type="text" name="" placeholder="食品许可证">
-                                             </label>
-                                             </label>
+                                             <input type="hidden" name="foodLicense" placeholder="食品许可证" id="foodLicense">
                                          </section>
                                      </div>
                                      </fieldset>

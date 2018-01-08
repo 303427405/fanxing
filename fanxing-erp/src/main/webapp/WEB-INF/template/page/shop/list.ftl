@@ -69,7 +69,7 @@
                                     <td>${o.address}</td>
                                     <td>${o.contact}</td>
                                     <td>${o.contactPhone}</td>
-                                    <td><span class="label label-default text-center pull-center">[#if o.createSource==0 ]批发商[#else]零售商[/#if]</span></td>
+                                    <td><span class="label label-default text-center pull-center">[#if o.createSource==1 ]供应商[#else]采购商[/#if]</span></td>
 
 									<td>[#if o.examineStatus==1 ]
 									       	<span class="label label-success text-center pull-center">启用</span>
